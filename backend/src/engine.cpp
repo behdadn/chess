@@ -34,3 +34,13 @@ std::string eval(std::string fen_input) {
 
     return cr.ForsythPublish();
 }
+
+// calculates material for use in heuristic eval func, negative for black and positive for white
+// also includes following factors:
+// + bishop pair
+// - no pawns
+int material(thc::ChessRules cr) {
+    int material_sum = 0;
+
+    return material_sum;
+}
