@@ -1,7 +1,9 @@
 #include "engine.h"
-#include "thc.h"
+
 #include <iostream>
 #include <vector>
+
+#include "thc.h"
 
 void display_position(thc::ChessRules &cr) {
     std::string fen = cr.ForsythPublish();
@@ -9,7 +11,8 @@ void display_position(thc::ChessRules &cr) {
 
     std::cout << s.c_str() << std::endl;
 
-    std::cout << fen.c_str() << "\n" << std::endl;
+    std::cout << fen.c_str() << "\n"
+              << std::endl;
 }
 
 std::string eval(std::string fen_input) {
