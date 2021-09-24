@@ -1,10 +1,10 @@
-#include <iostream>
+#include "server.h"
 
+#include <iostream>
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 
 #include "engine.h"
-#include "server.h"
 
 typedef websocketpp::server<websocketpp::config::asio> server;
 
