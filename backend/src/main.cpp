@@ -2,6 +2,5 @@
 
 int main() {
     serve();
-
     return 0;
 }
