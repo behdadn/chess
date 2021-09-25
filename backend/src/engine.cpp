@@ -34,9 +34,11 @@ void display_position(thc::ChessRules &cr) {
 
 // for bool color, white is true
 
-std::string eval(std::string fen) {
+std::string calculate_move(std::string fen) {
     thc::ChessRules cr;
     cr.Forsyth(fen.c_str());
+
+    std::cout << cr.ToDebugStr() << std::endl;
 
     std::vector<thc::Move> moves;
     cr.GenLegalMoveList(moves);
