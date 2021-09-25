@@ -1,5 +1,6 @@
 #include "engine.h"
 
+#include <cctype>
 #include <iostream>
 #include <unordered_map>
 #include <vector>
@@ -105,6 +106,7 @@ int heuristic_eval(thc::ChessRules &cr) {
     int score;
 
     score = COLOR ? score : -score;
+    score = material_eval(cr);
     return score;
 }
 
@@ -114,6 +116,22 @@ int heuristic_eval(thc::ChessRules &cr) {
 // - no pawns
 int material_eval(thc::ChessRules &cr) {
     int material = 0;
+
+    std::string pos = cr.ToDebugStr().substr(15, -1);
+
+    if (cr.WhiteToPlay()) {
+        for (int i = 0; i < pos.length(); i++) {
+            if (isupper(pos[i]) && pos[i] != '.') {
+                material += piece_values[tolower(pos[i])];
+            }
+        }
+    } else {
+        for (int i = 0; i < pos.length(); i++) {
+            if (islower(pos[i]) && pos[i] != '.') {
+                material += piece_values[tolower(pos[i])];
+            }
+        }
+    }
 
     return material;
 }
