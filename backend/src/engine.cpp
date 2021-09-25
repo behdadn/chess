@@ -25,9 +25,9 @@ void display_position(thc::ChessRules &cr) {
               << std::endl;
 }
 
-std::string eval(std::string fen_input) {
+std::string eval(std::string fen) {
     thc::ChessRules cr;
-    cr.Forsyth(fen_input.c_str());
+    cr.Forsyth(fen.c_str());
 
     std::vector<thc::Move> moves;
     std::vector<bool> check;
@@ -45,11 +45,35 @@ std::string eval(std::string fen_input) {
     return cr.ForsythPublish();
 }
 
+int negamax(thc::ChessRules &cr, int depth) {
+    std::vector<thc::Move> moves;
+    cr.GenLegalMoveList(moves);
+    if (depth == 0 || moves.size() == 0) {
+        return heuristic_eval(cr);
+    }
+    int max = -99999;
+    int score;
+    thc::ChessRules temp_cr;
+    for (int i = 0; i < moves.size(); i++) {
+        temp_cr = cr;
+        temp_cr.PlayMove(moves[i]);
+        score = -negamax(temp_cr, depth - 1);
+        if (score > max) {
+            max = score;
+        }
+    }
+    return max;
+}
+
+int heuristic_eval(thc::ChessRules &cr) {
+    return 1;
+}
+
 // calculates material for use in heuristic eval func, negative for black and positive for white
 // also includes following factors:
 // + bishop pair
 // - no pawns
-int material(thc::ChessRules &cr) {
+int material_eval(thc::ChessRules &cr) {
     int material_sum = 0;
 
     return material_sum;
