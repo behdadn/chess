@@ -88,7 +88,7 @@ int negamax(thc::ChessRules &cr, int depth) {
     std::vector<thc::Move> moves;
     cr.GenLegalMoveList(moves);
     if (depth == 0 || moves.size() == 0) {
-        return heuristic_eval(cr);
+        return eval(cr);
     }
     int max = -99999;
     int score;
@@ -104,7 +104,7 @@ int negamax(thc::ChessRules &cr, int depth) {
     return max;
 }
 
-int heuristic_eval(thc::ChessRules &cr) {
+int eval(thc::ChessRules &cr) {
     int score;
 
     score = material_eval(cr);
@@ -113,8 +113,9 @@ int heuristic_eval(thc::ChessRules &cr) {
     return score;
 }
 
-// calculates material for use in heuristic eval func, negative for black and positive for white
 int material_eval(thc::ChessRules &cr) {
+    // calculates material for use in heuristic eval func, negative for black and positive for white
+    // TODO: take other things into account (no pawns is worse, bishop pair is better)
     int material = 0;
 
     std::string pos = cr.ToDebugStr().substr(15, -1);
@@ -134,4 +135,4 @@ int material_eval(thc::ChessRules &cr) {
     }
 
     return material;
-}
+}}
