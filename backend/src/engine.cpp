@@ -52,11 +52,9 @@ std::string calculate_move(std::string fen) {
     // thc::Move mv = moves[rand() % (moves.size() + 1)];
     // cr.PlayMove(mv);
 
-    cr.PlayMove(moves[rootnm(cr, 3)]);
+    thc::Move mv = moves[rootnm(cr, 3)];
 
-    display_position(cr);
-
-    return cr.ForsythPublish();
+    return mv.NaturalOut(&cr);
 }
 
 int rootnm(thc::ChessRules &cr, int depth) {
@@ -135,4 +133,4 @@ int material_eval(thc::ChessRules &cr) {
     }
 
     return material;
-}}
+}
