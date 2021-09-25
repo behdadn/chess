@@ -49,11 +49,36 @@ std::string eval(std::string fen) {
     // thc::Move mv = moves[rand() % (moves.size() + 1)];
     // cr.PlayMove(mv);
 
-    cr.PlayMove(moves[negamax(cr, 3)]);
+    cr.PlayMove(moves[rootnm(cr, 3)]);
 
     display_position(cr);
 
     return cr.ForsythPublish();
+}
+
+int rootnm(thc::ChessRules &cr, int depth) {
+    std::vector<thc::Move> moves;
+    cr.GenLegalMoveList(moves);
+
+    thc::ChessRules temp_cr;
+
+    int score = -99999;
+    int temp_score;
+    int index;
+
+    for (int i = 0; i < moves.size(); i++) {
+        temp_cr = cr;
+
+        temp_cr.PlayMove(moves[i]);
+        temp_score = negamax(temp_cr, depth - 1);
+
+        if (temp_score > score) {
+            score = temp_score;
+            index = i;
+        }
+    }
+
+    return index;
 }
 
 int negamax(thc::ChessRules &cr, int depth) {
@@ -64,7 +89,6 @@ int negamax(thc::ChessRules &cr, int depth) {
     }
     int max = -99999;
     int score;
-    int index;
     thc::ChessRules temp_cr;
     for (int i = 0; i < moves.size(); i++) {
         temp_cr = cr;
@@ -72,14 +96,16 @@ int negamax(thc::ChessRules &cr, int depth) {
         score = -negamax(temp_cr, depth - 1);
         if (score > max) {
             max = score;
-            index = i;
         }
     }
-    return index;
+    return max;
 }
 
 int heuristic_eval(thc::ChessRules &cr) {
-    return 1;
+    int score;
+
+    score = COLOR ? score : -score;
+    return score;
 }
 
 // calculates material for use in heuristic eval func, negative for black and positive for white
@@ -89,6 +115,5 @@ int heuristic_eval(thc::ChessRules &cr) {
 int material_eval(thc::ChessRules &cr) {
     int material = 0;
 
-    material = COLOR ? material : -material;
     return material;
 }
