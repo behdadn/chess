@@ -14,9 +14,6 @@ std::unordered_map<char, int> piece_values = {
     {'k', 10000},
 };
 
-bool COLOR;
-
-void set_color(thc::ChessRules &cr) { COLOR = cr.WhiteToPlay(); }
 
 void display_position(thc::ChessRules &cr) {
     std::string fen = cr.ForsythPublish();
@@ -33,8 +30,6 @@ void display_position(thc::ChessRules &cr) {
 std::string eval(std::string fen) {
     thc::ChessRules cr;
     cr.Forsyth(fen.c_str());
-
-    set_color(cr);
 
     std::vector<thc::Move> moves;
     cr.GenLegalMoveList(moves);
@@ -103,8 +98,9 @@ int negamax(thc::ChessRules &cr, int depth) {
 int heuristic_eval(thc::ChessRules &cr) {
     int score;
 
-    score = COLOR ? score : -score;
     score = material_eval(cr);
+
+    score = cr.WhiteToPlay() ? score : -score;
     return score;
 }
 
