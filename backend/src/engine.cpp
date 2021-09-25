@@ -22,9 +22,9 @@ void display_position(thc::ChessRules &cr) {
     std::string fen = cr.ForsythPublish();
     std::string s = cr.ToDebugStr();
 
-    std::cout << s.c_str() << std::endl;
+    std::cout << s << std::endl;
 
-    std::cout << fen.c_str() << "\n"
+    std::cout << fen << "\n"
               << std::endl;
 }
 
