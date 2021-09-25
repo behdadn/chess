@@ -5,9 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "thc.h"
-
-std::unordered_map<char, int> centipawn = {
+std::unordered_map<char, int> piece_values = {
     {'p', 100},
     {'n', 350},
     {'b', 350},
@@ -111,9 +109,6 @@ int heuristic_eval(thc::ChessRules &cr) {
 }
 
 // calculates material for use in heuristic eval func, negative for black and positive for white
-// also includes following factors:
-// + bishop pair
-// - no pawns
 int material_eval(thc::ChessRules &cr) {
     int material = 0;
 
