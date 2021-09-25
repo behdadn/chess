@@ -30,15 +30,18 @@ std::string eval(std::string fen) {
     cr.Forsyth(fen.c_str());
 
     std::vector<thc::Move> moves;
-    std::vector<bool> check;
-    std::vector<bool> mate;
-    std::vector<bool> stalemate;
-    cr.GenLegalMoveList(moves, check, mate, stalemate);
+    cr.GenLegalMoveList(moves);
+    // std::vector<bool> check;
+    // std::vector<bool> mate;
+    // std::vector<bool> stalemate;
+    // cr.GenLegalMoveList(moves, check, mate, stalemate);
 
-    std::cout << check.size() << std::endl;
+    // std::cout << check.size() << std::endl;
 
-    thc::Move mv = moves[rand() % (moves.size() + 1)];
-    cr.PlayMove(mv);
+    // thc::Move mv = moves[rand() % (moves.size() + 1)];
+    // cr.PlayMove(mv);
+
+    cr.PlayMove(moves[negamax(cr, 3)]);
 
     display_position(cr);
 
@@ -53,6 +56,7 @@ int negamax(thc::ChessRules &cr, int depth) {
     }
     int max = -99999;
     int score;
+    int index;
     thc::ChessRules temp_cr;
     for (int i = 0; i < moves.size(); i++) {
         temp_cr = cr;
@@ -60,9 +64,10 @@ int negamax(thc::ChessRules &cr, int depth) {
         score = -negamax(temp_cr, depth - 1);
         if (score > max) {
             max = score;
+            index = i;
         }
     }
-    return max;
+    return index;
 }
 
 int heuristic_eval(thc::ChessRules &cr) {
