@@ -15,6 +15,10 @@ std::unordered_map<char, int> centipawn = {
     {'k', 10000},
 };
 
+bool COLOR;
+
+void set_color(thc::ChessRules &cr) { COLOR = cr.WhiteToPlay(); }
+
 void display_position(thc::ChessRules &cr) {
     std::string fen = cr.ForsythPublish();
     std::string s = cr.ToDebugStr();
@@ -25,9 +29,13 @@ void display_position(thc::ChessRules &cr) {
               << std::endl;
 }
 
+// for bool color, white is true
+
 std::string eval(std::string fen) {
     thc::ChessRules cr;
     cr.Forsyth(fen.c_str());
+
+    set_color(cr);
 
     std::vector<thc::Move> moves;
     cr.GenLegalMoveList(moves);
@@ -79,7 +87,8 @@ int heuristic_eval(thc::ChessRules &cr) {
 // + bishop pair
 // - no pawns
 int material_eval(thc::ChessRules &cr) {
-    int material_sum = 0;
+    int material = 0;
 
-    return material_sum;
+    material = COLOR ? material : -material;
+    return material;
 }
