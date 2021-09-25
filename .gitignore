@@ -1,9 +1,9 @@
 # c++
 
 # folders (bin, debug, obj)
-*/bin/
-*/obj/
-*/debug/
+bin/
+obj/
+debug/
 
 # Prerequisites
 *.d
