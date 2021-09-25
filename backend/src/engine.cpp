@@ -14,6 +14,13 @@ std::unordered_map<char, int> piece_values = {
     {'k', 10000},
 };
 
+// TODO: delete this function when the engine is fully implemented
+thc::ChessRules fen_to_cr(std::string fen) {
+    // for testing
+    thc::ChessRules cr;
+    cr.Forsyth(fen.c_str());
+    return cr;
+}
 
 void display_position(thc::ChessRules &cr) {
     std::string fen = cr.ForsythPublish();
