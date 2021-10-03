@@ -286,3 +286,15 @@ int material_eval(thc::ChessRules &cr) {
 
     return material;
 }
+
+double psqt_eval(thc::ChessRules &cr) {
+    std::string pos = cr.ToDebugStr().substr(15, -1);
+
+    double psqt_sum = 0;
+
+    for (int i = 0; i < pos.length(); i++) {
+        if (pos[i] != '.') psqt_sum += psqt[psqt_index[pos[i]]][i / 4][i % 4];
+    }
+
+    return psqt_sum;
+}
