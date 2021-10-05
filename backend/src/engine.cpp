@@ -273,12 +273,30 @@ int material_eval(thc::ChessRules &cr) {
 }
 
 double psqt_eval(thc::ChessRules &cr) {
-    std::string pos = cr.ToDebugStr().substr(15, -1);
+    std::string pos_str = cr.ToDebugStr().substr(15, -1);
+
+    std::vector<std::string> pos;
+
+    boost::algorithm::split(pos, pos_str, boost::algorithm::is_any_of("\n"));
 
     double psqt_sum = 0;
 
-    for (int i = 0; i < pos.length(); i++) {
-        if (pos[i] != '.') psqt_sum += psqt[psqt_index[pos[i]]][i / 4][i % 4];
+    if (cr.WhiteToPlay()) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (isupper(pos[i][j])) {
+                    psqt_sum += psqt[psqt_index[pos[i][j]]][i][j];
+                }
+            }
+        }
+    } else {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (islower(pos[i][j])) {
+                    psqt_sum += psqt[psqt_index[pos[i][j]]][i][j];
+                }
+            }
+        }
     }
 
     return psqt_sum;
