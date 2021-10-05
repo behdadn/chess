@@ -245,7 +245,10 @@ int minimax(thc::ChessRules &cr, int depth) {
 int eval(thc::ChessRules &cr) {
     int score;
 
-    score = material_eval(cr);
+    double material = (double)material_eval(cr);
+    double piecesquaretable = psqt_eval(cr);
+
+    score = 0.0001 * material * piecesquaretable;
 
     score = cr.WhiteToPlay() ? score : -score;
     return score;
