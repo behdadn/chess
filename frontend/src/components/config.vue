@@ -25,12 +25,11 @@ export default {
     return {
       // easy access to difficulties
       difs: [
-        { number: 0, title: "random" },
-        { number: 1, title: "easy" },
-        { number: 2, title: "beginner" },
-        { number: 3, title: "intermediate" },
-        { number: 4, title: "advanced" },
-        { number: 5, title: "experienced" },
+        { number: 0, title: "very easy" },
+        { number: 1, title: "beginner" },
+        { number: 2, title: "intermediate" },
+        { number: 3, title: "advanced" },
+        { number: 4, title: "experienced" },
       ],
     };
   },
