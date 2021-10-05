@@ -6,15 +6,14 @@ Vue.use(Vuex);
 Vue.config.productionTip = false;
 
 const difref = [
-  { 0: "random" },
-  { 1: "easy" },
-  { 2: "beginner" },
-  { 3: "intermediate" },
-  { 4: "advanced" },
-  { 5: "experienced" },
+  { 0: "very easy" },
+  { 1: "beginner" },
+  { 2: "intermediate" },
+  { 3: "advanced" },
+  { 4: "experienced" },
 ];
 
-const difficulty = 0;
+const difficulty = 1;
 
 const store = new Vuex.Store({
   // set up vuex store
