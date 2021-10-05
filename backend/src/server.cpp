@@ -15,6 +15,13 @@ using websocketpp::lib::placeholders::_2;
 // pull out the type of messages sent by our config
 typedef server::message_ptr message_ptr;
 
+int difficulty;
+
+std::string get_fen(std::string input) {
+    difficulty = std::stoi(input.substr(0, 1));
+    return input.substr(2, -1);
+}
+
 // Define a callback to handle incoming messages
 void on_message(server *s, websocketpp::connection_hdl hdl, message_ptr msg) {
     /* std::cout << "on_message called with hdl: " << hdl.lock().get() */
@@ -30,7 +37,7 @@ void on_message(server *s, websocketpp::connection_hdl hdl, message_ptr msg) {
     try {
         /* s->send(hdl, msg->get_payload(), msg->get_opcode()); */
 
-        s->send(hdl, calculate_move(msg->get_payload()), msg->get_opcode());
+        s->send(hdl, calculate_move(get_fen(msg->get_payload()), difficulty), msg->get_opcode());
     } catch (websocketpp::exception const &e) {
         std::cout << "Echo failed because: "
                   << "(" << e.what() << ")" << std::endl;
