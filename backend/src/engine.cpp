@@ -185,6 +185,8 @@ std::string calculate_move(std::string fen, int depth) {
 
     std::cout << cr.ToDebugStr() << std::endl;
 
+    std::cout << depth << std::endl;
+
     std::cout << eval(cr) << std::endl;
 
     std::vector<thc::Move> moves;
