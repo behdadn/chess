@@ -166,14 +166,6 @@ double psqt[12][8][8] = {
     },
 };
 
-// TODO: delete this function when the engine is fully implemented
-thc::ChessRules fen_to_cr(std::string fen) {
-    // for testing
-    thc::ChessRules cr;
-    cr.Forsyth(fen.c_str());
-    return cr;
-}
-
 void display_position(thc::ChessRules &cr) {
     std::string fen = cr.ForsythPublish();
     std::string s = cr.ToDebugStr();
@@ -194,15 +186,8 @@ std::string calculate_move(std::string fen) {
 
     std::vector<thc::Move> moves;
     cr.GenLegalMoveList(moves);
-    // std::vector<bool> check;
-    // std::vector<bool> mate;
-    // std::vector<bool> stalemate;
-    // cr.GenLegalMoveList(moves, check, mate, stalemate);
 
-    // std::cout << check.size() << std::endl;
-
-    // thc::Move mv = moves[rand() % (moves.size() + 1)];
-    // cr.PlayMove(mv);
+    thc::Move mv = moves[rootmm(cr, depth)];
 
     thc::Move mv = moves[rootnm(cr, 3)];
 
