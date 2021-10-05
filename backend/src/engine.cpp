@@ -1,5 +1,6 @@
 #include "engine.h"
 
+#include <boost/algorithm/string.hpp>
 #include <cctype>
 #include <iostream>
 #include <unordered_map>
@@ -178,23 +179,25 @@ void display_position(thc::ChessRules &cr) {
 
 // for bool color, white is true
 
-std::string calculate_move(std::string fen) {
+std::string calculate_move(std::string fen, int depth) {
     thc::ChessRules cr;
     cr.Forsyth(fen.c_str());
 
     std::cout << cr.ToDebugStr() << std::endl;
+
+    std::cout << eval(cr) << std::endl;
 
     std::vector<thc::Move> moves;
     cr.GenLegalMoveList(moves);
 
     thc::Move mv = moves[rootmm(cr, depth)];
 
-    thc::Move mv = moves[rootnm(cr, 3)];
+    std::cout << mv.NaturalOut(&cr) << std::endl;
 
     return mv.NaturalOut(&cr);
 }
 
-int rootnm(thc::ChessRules &cr, int depth) {
+int rootmm(thc::ChessRules &cr, int depth) {
     std::vector<thc::Move> moves;
     cr.GenLegalMoveList(moves);
 
@@ -208,7 +211,7 @@ int rootnm(thc::ChessRules &cr, int depth) {
         temp_cr = cr;
 
         temp_cr.PlayMove(moves[i]);
-        temp_score = negamax(temp_cr, depth - 1);
+        temp_score = minimax(temp_cr, depth - 1);
 
         if (temp_score > score) {
             score = temp_score;
@@ -219,7 +222,7 @@ int rootnm(thc::ChessRules &cr, int depth) {
     return index;
 }
 
-int negamax(thc::ChessRules &cr, int depth) {
+int minimax(thc::ChessRules &cr, int depth) {
     std::vector<thc::Move> moves;
     cr.GenLegalMoveList(moves);
     if (depth == 0 || moves.size() == 0) {
@@ -231,7 +234,7 @@ int negamax(thc::ChessRules &cr, int depth) {
     for (int i = 0; i < moves.size(); i++) {
         temp_cr = cr;
         temp_cr.PlayMove(moves[i]);
-        score = -negamax(temp_cr, depth - 1);
+        score = -minimax(temp_cr, depth - 1);
         if (score > max) {
             max = score;
         }
@@ -257,13 +260,13 @@ int material_eval(thc::ChessRules &cr) {
 
     if (cr.WhiteToPlay()) {
         for (int i = 0; i < pos.length(); i++) {
-            if (isupper(pos[i]) && pos[i] != '.') {
+            if (isupper(pos[i])) {
                 material += piece_values[tolower(pos[i])];
             }
         }
     } else {
         for (int i = 0; i < pos.length(); i++) {
-            if (islower(pos[i]) && pos[i] != '.') {
+            if (islower(pos[i])) {
                 material += piece_values[tolower(pos[i])];
             }
         }
