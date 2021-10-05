@@ -32,7 +32,7 @@ export default {
           this.random();
         } else {
           // ai move
-          this.aiMove();
+          this.wsAI();
         }
       };
     },
@@ -49,6 +49,44 @@ export default {
       this.game.move({
         from: movefrom,
         to: moveto,
+      });
+
+      this.board.set({
+        fen: this.game.fen(),
+        turnColor: this.toColor(),
+        movable: {
+          color: this.toColor(),
+          dests: this.possibleMoves(),
+          events: { after: this.userPlay() },
+        },
+      });
+      if (this.game.in_checkmate()) {
+        // this.$store.commit("gameLost");
+        this.$store.commit("setStatus", 2);
+      }
+      if (this.game.in_draw() || this.game.in_stalemate()) {
+        // this.$store.commit("draw");
+        this.$store.commit("setStatus", 3);
+      }
+    },
+
+    wsAI() {
+      let webSocket = new WebSocket("ws://localhost:9002");
+
+      webSocket.onopen = function (event) {
+        webSocket.send(
+          this.$store.state.difficulty.number.toString() + this.game.fen()
+        );
+      };
+
+      let move;
+
+      webSocket.onmessage = function (event) {
+        move = event.data;
+      };
+
+      this.game.move({
+        to: move,
       });
 
       this.board.set({
