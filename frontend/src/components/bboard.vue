@@ -1,6 +1,5 @@
 <script>
 import { chessboard } from "vue-chessboard";
-const jsChessEngine = require("js-chess-engine");
 
 export default {
   name: "board",
@@ -26,17 +25,32 @@ export default {
           //   this.$store.commit("draw");
           this.$store.commit("setStatus", 3);
         }
-        this.aiMove();
+        this.getmove();
       };
     },
-    aiMove() {
-      console.log("ai playing");
-      const g = new jsChessEngine.Game(this.game.fen());
-      let move = g.aiMove(this.$store.state.difficulty.number);
-      this.game.move({
-        from: Object.keys(move)[0].toLowerCase(),
-        to: move[Object.keys(move)[0]].toLowerCase(),
-      });
+
+    getmove() {
+      let socket = new WebSocket("ws://localhost:9002");
+
+      var self = this;
+
+      socket.onopen = function (event) {
+        console.log(event);
+        socket.send(
+          (self.$store.state.difficulty.number + 1).toString() +
+            " " +
+            self.game.fen()
+        );
+      };
+
+      socket.onmessage = function (event) {
+        self.playmove(event.data);
+      };
+    },
+
+    playmove(mv) {
+      this.game.move(mv);
+
       this.board.set({
         fen: this.game.fen(),
         turnColor: this.toColor(),
@@ -58,7 +72,7 @@ export default {
   },
   mounted() {
     this.board.set({
-      movable: { events: { after: this.aiMove() } },
+      movable: { events: { after: this.getmove() } },
     });
   },
 };
