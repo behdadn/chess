@@ -7,6 +7,7 @@
 #include <vector>
 
 std::unordered_map<char, int> piece_values = {
+    // used for material eval
     {'p', 100},
     {'n', 350},
     {'b', 350},
@@ -15,9 +16,8 @@ std::unordered_map<char, int> piece_values = {
     {'k', 10000},
 };
 
-// TODO: refactor all of this !!!
-
 std::unordered_map<char, int> psqt_index = {
+    // used for fast traversal of the psqt array
     {'K', 0},
     {'k', 1},
     {'Q', 2},
@@ -33,6 +33,7 @@ std::unordered_map<char, int> psqt_index = {
 };
 
 double psqt[12][8][8] = {
+    // used for the value to use in the piece square table eval
     {
         // white king
         {-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0},
@@ -167,18 +168,6 @@ double psqt[12][8][8] = {
     },
 };
 
-void display_position(thc::ChessRules &cr) {
-    std::string fen = cr.ForsythPublish();
-    std::string s = cr.ToDebugStr();
-
-    std::cout << s << std::endl;
-
-    std::cout << fen << "\n"
-              << std::endl;
-}
-
-// for bool color, white is true
-
 std::string calculate_move(std::string fen, int depth) {
     thc::ChessRules cr;
     cr.Forsyth(fen.c_str());
@@ -187,7 +176,8 @@ std::string calculate_move(std::string fen, int depth) {
 
     std::cout << depth << std::endl;
 
-    std::cout << eval(cr) << std::endl;
+    // std::cout << "old eval: " << eval(cr) << std::endl;
+    std::cout << "new eval: " << eval(cr) << std::endl;
 
     std::vector<thc::Move> moves;
     cr.GenLegalMoveList(moves);
@@ -205,8 +195,8 @@ int rootmm(thc::ChessRules &cr, int depth) {
 
     thc::ChessRules temp_cr;
 
-    int score = -99999;
-    int temp_score;
+    double score = -99999;
+    double temp_score;
     int index;
 
     for (int i = 0; i < moves.size(); i++) {
@@ -224,7 +214,7 @@ int rootmm(thc::ChessRules &cr, int depth) {
     return index;
 }
 
-int minimax(thc::ChessRules &cr, int depth) {
+double minimax(thc::ChessRules &cr, int depth) {
     std::vector<thc::Move> moves;
     cr.GenLegalMoveList(moves);
     if (depth == 0 || moves.size() == 0) {
@@ -244,56 +234,21 @@ int minimax(thc::ChessRules &cr, int depth) {
     return max;
 }
 
-int eval(thc::ChessRules &cr) {
-    int score;
-
-    double material = (double)material_eval(cr);
-    double piecesquaretable = psqt_eval(cr);
-
-    score = 0.0001 * material * piecesquaretable;
-
-    score = cr.WhiteToPlay() ? score : -score;
-    return score;
-}
-
-int material_eval(thc::ChessRules &cr) {
-    // calculates material for use in heuristic eval func, negative for black and positive for white
-    // TODO: take other things into account (no pawns is worse, bishop pair is better)
+double eval(thc::ChessRules &cr) {
     int material = 0;
+    double psqt_score = 0;
 
-    std::string pos = cr.ToDebugStr().substr(15, -1);
-
-    if (cr.WhiteToPlay()) {
-        for (int i = 0; i < pos.length(); i++) {
-            if (isupper(pos[i])) {
-                material += piece_values[tolower(pos[i])];
-            }
-        }
-    } else {
-        for (int i = 0; i < pos.length(); i++) {
-            if (islower(pos[i])) {
-                material += piece_values[tolower(pos[i])];
-            }
-        }
-    }
-
-    return material;
-}
-
-double psqt_eval(thc::ChessRules &cr) {
     std::string pos_str = cr.ToDebugStr().substr(15, -1);
 
     std::vector<std::string> pos;
-
     boost::algorithm::split(pos, pos_str, boost::algorithm::is_any_of("\n"));
-
-    double psqt_sum = 0;
 
     if (cr.WhiteToPlay()) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (isupper(pos[i][j])) {
-                    psqt_sum += psqt[psqt_index[pos[i][j]]][i][j];
+                    psqt_score += psqt[psqt_index[pos[i][j]]][i][j];
+                    material += piece_values[tolower(pos[i][j])];
                 }
             }
         }
@@ -301,11 +256,12 @@ double psqt_eval(thc::ChessRules &cr) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (islower(pos[i][j])) {
-                    psqt_sum += psqt[psqt_index[pos[i][j]]][i][j];
+                    psqt_score += psqt[psqt_index[pos[i][j]]][i][j];
+                    material += piece_values[tolower(pos[i][j])];
                 }
             }
         }
     }
 
-    return psqt_sum;
+    return 0.0001 * material * psqt_score;
 }
