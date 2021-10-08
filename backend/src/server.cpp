@@ -16,29 +16,26 @@ using websocketpp::lib::placeholders::_2;
 typedef server::message_ptr message_ptr;
 
 int difficulty;
+// keeps track of the depth of the eval function
 
 std::string get_fen(std::string input) {
+    // splits the message to the server into difficulty and FEN of the position
     difficulty = std::stoi(input.substr(0, 1));
     return input.substr(2, -1);
 }
 
-// Define a callback to handle incoming messages
 void on_message(server *s, websocketpp::connection_hdl hdl, message_ptr msg) {
-    /* std::cout << "on_message called with hdl: " << hdl.lock().get() */
-    /*           << " and message: " << msg->get_payload() << std::endl; */
-
-    // check for a special command to instruct the server to stop listening so
-    // it can be cleanly exited.
+    // function that handles incoming messages
     if (msg->get_payload() == "stop-listening") {
         s->stop_listening();
         return;
     }
 
     try {
-        /* s->send(hdl, msg->get_payload(), msg->get_opcode()); */
-
+        // tries to send back the best move using the calculate_move function
         s->send(hdl, calculate_move(get_fen(msg->get_payload()), difficulty), msg->get_opcode());
     } catch (websocketpp::exception const &e) {
+        // in case the sending process fails
         std::cout << "Echo failed because: "
                   << "(" << e.what() << ")" << std::endl;
     }
