@@ -176,18 +176,11 @@ std::string calculate_move(std::string fen, int depth) {
     cr.Forsyth(fen.c_str());
     // creates new ChessRules instance, which represents the game, and sets it up using the fen input
 
-    std::vector<thc::Move> moves;
-    cr.GenLegalMoveList(moves);
-    // generates the list of moves that the computer can legally play
-
-    thc::Move mv = moves[rootmm(cr, depth)];
-    // finds the move that the algorithm has calculated as the best
-
-    return mv.NaturalOut(&cr);
-    // returns that move as a string for the server to send back to the site
+    // returns the move that the rootmm function returns as the "best"
+    return rootmm(cr, depth);
 }
 
-int rootmm(thc::ChessRules &cr, int depth) {
+std::string rootmm(thc::ChessRules &cr, int depth) {
     // the root minimax function that starts the evaluation process
     // returns the index of the calculated best move in the moves vector
 
@@ -223,7 +216,7 @@ int rootmm(thc::ChessRules &cr, int depth) {
             // store the index of that "optimal" move
         }
     }
-    return index;
+    return moves[index].NaturalOut(&cr);
     // returns index of the calculated move
 }
 
