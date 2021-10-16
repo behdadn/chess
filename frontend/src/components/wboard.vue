@@ -21,10 +21,12 @@ export default {
         if (this.game.in_checkmate()) {
           // check if checkmate and sets game status
           this.$store.commit("setStatus", 1);
+          return;
         }
         if (this.game.in_draw() || this.game.in_stalemate()) {
           // check if draw and sets game status
           this.$store.commit("setStatus", 3);
+          return;
         }
         // runs the function that fetches the AI move
         this.getmove();
@@ -73,10 +75,12 @@ export default {
       if (this.game.in_checkmate()) {
         // check if checkmate and change game status
         this.$store.commit("setStatus", 2);
+        return;
       }
       if (this.game.in_draw() || this.game.in_stalemate()) {
         // check if draw and change game status
         this.$store.commit("setStatus", 3);
+        return;
       }
     },
   },
