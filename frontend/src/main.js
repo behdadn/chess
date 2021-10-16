@@ -109,7 +109,6 @@ const store = new Vuex.Store({
       // sets the depth of the eval function
       state.difficulty.number = n;
       state.difficulty.title = difref[n][n];
-      console.log(state.difficulty.number);
     },
   },
 });
