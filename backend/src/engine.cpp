@@ -291,6 +291,10 @@ double eval(thc::ChessRules &cr) {
         }
     }
 
-    return 0.0001 * material * psqt_score;
+    int score = 0.0001 * material * psqt_score;
+
+    score = cr.WhiteToPlay() ? score : -score;
+
+    return score;
     // returns the product of 0.0001 x the material and the piece-square table score
 }
