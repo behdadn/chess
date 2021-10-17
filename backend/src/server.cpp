@@ -26,11 +26,6 @@ std::string get_fen(std::string input) {
 
 void on_message(server *s, websocketpp::connection_hdl hdl, message_ptr msg) {
     // function that handles incoming messages
-    if (msg->get_payload() == "stop-listening") {
-        s->stop_listening();
-        return;
-    }
-
     try {
         // tries to send back the best move using the calculate_move function
         s->send(hdl, calculate_move(get_fen(msg->get_payload()), difficulty), msg->get_opcode());
