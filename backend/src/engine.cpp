@@ -206,7 +206,7 @@ std::string rootmm(thc::ChessRules &cr, int depth) {
         temp_cr.PlayMove(moves[i]);
         // plays a move in the temp_cr which is reset everytime the loop iterates
         temp_score = minimax(temp_cr, depth - 1);
-        // calls the real minimax algorithm on the position after that move is played in the temp_Cr
+        // calls the real minimax algorithm on the position after that move is played in the temp_cr
 
         if (temp_score > score) {
             // if the score returned by the minimax is higher than the current score
