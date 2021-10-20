@@ -8,28 +8,13 @@
 
 std::unordered_map<char, int> piece_values = {
     // used for material eval
-    {'p', 100},
-    {'n', 350},
-    {'b', 350},
-    {'r', 525},
-    {'q', 1000},
-    {'k', 10000},
+    {'p', 100}, {'n', 350}, {'b', 350}, {'r', 525}, {'q', 1000}, {'k', 10000},
 };
 
 std::unordered_map<char, int> psqt_index = {
     // used for fast traversal of the psqt array
-    {'K', 0},
-    {'k', 1},
-    {'Q', 2},
-    {'q', 3},
-    {'R', 4},
-    {'r', 5},
-    {'B', 6},
-    {'b', 7},
-    {'N', 8},
-    {'n', 9},
-    {'P', 10},
-    {'p', 11},
+    {'K', 0}, {'k', 1}, {'Q', 2}, {'q', 3}, {'R', 4},  {'r', 5},
+    {'B', 6}, {'b', 7}, {'N', 8}, {'n', 9}, {'P', 10}, {'p', 11},
 };
 
 double psqt[12][8][8] = {
@@ -170,11 +155,13 @@ double psqt[12][8][8] = {
 
 std::string calculate_move(std::string fen, int depth) {
     // function that takes the fen as input and returns the computer move
-    // depth tracks how deep the algorithm is meant to move in the tree of possible moves (depth = no. of moves to look ahead)
+    // depth tracks how deep the algorithm is meant to move in the tree of
+    // possible moves (depth = no. of moves to look ahead)
 
     thc::ChessRules cr;
     cr.Forsyth(fen.c_str());
-    // creates new ChessRules instance, which represents the game, and sets it up using the fen input
+    // creates new ChessRules instance, which represents the game, and sets it
+    // up using the fen input
 
     // returns the move that the rootmm function returns as the "best"
     return rootmm(cr, depth);
@@ -189,7 +176,8 @@ std::string rootmm(thc::ChessRules &cr, int depth) {
     // generates list of legal moves
 
     thc::ChessRules temp_cr;
-    // a temporary ChessRules instance for making the moves and evaluating the positions
+    // a temporary ChessRules instance for making the moves and evaluating the
+    // positions
 
     double score = -99999;
     // set very low so technically all moves are better at first
@@ -204,14 +192,18 @@ std::string rootmm(thc::ChessRules &cr, int depth) {
         // sets the temp_cr equal to the current game
 
         temp_cr.PlayMove(moves[i]);
-        // plays a move in the temp_cr which is reset everytime the loop iterates
+        // plays a move in the temp_cr which is reset everytime the loop
+        // iterates
         temp_score = minimax(temp_cr, depth - 1);
-        // calls the real minimax algorithm on the position after that move is played in the temp_cr
+        // calls the real minimax algorithm on the position after that move is
+        // played in the temp_cr
 
         if (temp_score > score) {
-            // if the score returned by the minimax is higher than the current score
+            // if the score returned by the minimax is higher than the current
+            // score
             score = temp_score;
-            // sets score to the score of the position to remember the best eval achieved
+            // sets score to the score of the position to remember the best eval
+            // achieved
             index = i;
             // store the index of that "optimal" move
         }
@@ -227,7 +219,8 @@ double minimax(thc::ChessRules &cr, int depth) {
     // generates list of legal moves
 
     if (depth == 0 || moves.size() == 0) {
-        // if there are no more moves(checkmate, draw) or the depth is 0, return the evaluation of the current position
+        // if there are no more moves(checkmate, draw) or the depth is 0, return
+        // the evaluation of the current position
         return eval(cr);
     }
 
@@ -247,7 +240,8 @@ double minimax(thc::ChessRules &cr, int depth) {
 }
 
 double eval(thc::ChessRules &cr) {
-    // the function that actually evaluates the positions and returns the score of each one
+    // the function that actually evaluates the positions and returns the score
+    // of each one
     int material = 0;
     double psqt_score = 0;
     // variables to keep track of material score and piece square table score
@@ -257,7 +251,8 @@ double eval(thc::ChessRules &cr) {
 
     std::vector<std::string> pos;
     boost::algorithm::split(pos, pos_str, boost::algorithm::is_any_of("\n"));
-    // splits up the position string into an array of strings, each of which represents a row of the board
+    // splits up the position string into an array of strings, each of which
+    // represents a row of the board
 
     if (cr.WhiteToPlay()) {
         // the loop if white is playing
@@ -296,5 +291,6 @@ double eval(thc::ChessRules &cr) {
     score = cr.WhiteToPlay() ? score : -score;
 
     return score;
-    // returns the product of 0.0001 x the material and the piece-square table score
+    // returns the product of 0.0001 x the material and the piece-square table
+    // score
 }
